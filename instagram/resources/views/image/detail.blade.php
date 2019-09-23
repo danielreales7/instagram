@@ -43,19 +43,38 @@
                                 <h2>Comentarios ({{ count($image->comments) }})</h2>
                                 <hr>
 
-                                <form method="post" action="">
+                                <form method="post" action="{{ route('comment.save') }}">
                                     @csrf
 
                                     <input type="hidden" name="image_id" value="{{ $image->id }}" />
                                     <p>
-                                        <textarea class="form-control" name="content" required>
-
-                                        </textarea>
+                                        <textarea class="form-control @error('content') is-invalid @enderror" name="content"></textarea>
+                                        @error('content')
+                                        <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
                                     </p>
                                     <button type="submit" class="btn btn-success">
                                         Enviar
                                     </button>
                                 </form>
+
+                                <hr>
+
+                                @foreach($image->comments as $comment)
+                                <div class="comment">
+                                    <span class="nickname">
+                                        {{ '@'.$comment->user->nick }}
+                                    </span>
+                                    <span class="nickname date">
+                                        {{ ' | '. FormatTime::LongTimeFilter($comment->created_at) }}
+                                    </span>
+                                    <p>
+                                        {{ $comment->content }}
+                                    </p>
+                                </div>
+                                @endforeach
                             </div>
                         </div>
                     </div>
